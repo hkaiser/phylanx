@@ -7,6 +7,7 @@ set(subdirs
     algorithms
     arithmetics
     booleans
+    constants_of_nature
     controls
     fileio
     listops
