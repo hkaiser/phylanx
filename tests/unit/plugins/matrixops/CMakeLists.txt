@@ -31,6 +31,7 @@ set(tests
     row_slicing
     shuffle_operation
     slicing_operation
+    squeeze_operation
     sum_operation
     transpose_operation
     vstack_operation
