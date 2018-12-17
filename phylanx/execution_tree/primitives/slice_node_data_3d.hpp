@@ -35,9 +35,9 @@ namespace phylanx { namespace execution_tree
     // return a slice from a 3d ir::node_data
     template <typename T, typename Data, typename F>
     ir::node_data<T> slice3d_basic_basic_basic(Data&& t,
-        ir::slicing_indices const& rows, ir::slicing_indices const& columns,
-        ir::slicing_indices const& pages, F const& f, std::string const& name,
-        std::string const& codename)
+        ir::slicing_indices const& pages, ir::slicing_indices const& rows,
+        ir::slicing_indices const& columns, F const& f,
+        std::string const& name, std::string const& codename)
     {
         std::size_t numrows = t.rows();
         if (rows.start() >= std::int64_t(numrows) ||
@@ -171,9 +171,9 @@ namespace phylanx { namespace execution_tree
     ///////////////////////////////////////////////////////////////////////////
     template <typename T, typename Data, typename F>
     ir::node_data<T> slice3d_integer_integer_integer(Data&& t,
+        ir::node_data<std::int64_t> && pages,
         ir::node_data<std::int64_t> && rows,
-        ir::node_data<std::int64_t> && columns,
-        ir::node_data<std::int64_t> && pages, F const& f,
+        ir::node_data<std::int64_t> && columns, F const& f,
         std::string const& name, std::string const& codename)
     {
         std::size_t numrows = t.rows();
@@ -249,12 +249,12 @@ namespace phylanx { namespace execution_tree
         std::string const& name, std::string const& codename)
     {
         auto t = data.tensor();
-        ir::slicing_indices pages{0ll, std::int64_t(t.pages()), 1ll};
+        ir::slicing_indices rows{0ll, std::int64_t(t.rows()), 1ll};
         ir::slicing_indices columns{0ll, std::int64_t(t.columns()), 1ll};
         return slice3d_basic_basic_basic<T>(t,
             util::slicing_helpers::extract_slicing(
-                indices, t.rows(), name, codename),
-            columns, pages, detail::slice_identity<T>{}, name, codename);
+                indices, t.pages(), name, codename),
+            rows, columns, detail::slice_identity<T>{}, name, codename);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -302,9 +302,9 @@ namespace phylanx { namespace execution_tree
     ///////////////////////////////////////////////////////////////////////////
     // This is the main entry point for 3d slicing
     template <typename T, typename Data, typename F>
-    ir::node_data<T> slice3d(Data&& t, primitive_argument_type const& rows,
-        primitive_argument_type const& columns,
-        primitive_argument_type const& pages, F const& f,
+    ir::node_data<T> slice3d(Data&& t, primitive_argument_type const& pages,
+        primitive_argument_type const& rows,
+        primitive_argument_type const& columns, F const& f,
         std::string const& name, std::string const& codename)
     {
         if (is_list_operand_strict(rows) && is_list_operand_strict(columns) &&
